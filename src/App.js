@@ -1,12 +1,12 @@
 // App.js
 import React, { useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Login from './Components/Auth/Login'
-import Signup from './Components/Auth/Signup';
-import Dashboard from './Components/Dashboard/Dashboard';
+import Login from './ClientSide/Components/Auth/Login'
+import Signup from './ClientSide/Components/Auth/Signup'
+import Dashboard from './ClientSide/Components/Dashboard/Dashboard';
 import 'react-toastify/dist/ReactToastify.css';
-import MyTaskPage from './Components/Dashboard/MyTaskPage';
-import Sidebar from './Components/Dashboard/Sidebar';
+import MyTaskPage from './ClientSide/Components/Dashboard/MyTaskPage';
+import Sidebar from './ClientSide/Components/Dashboard/Sidebar';
 
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -34,6 +34,7 @@ function App() {
         />
         <Route path="/mytasks" element={<MyTaskPage />} />
       </Routes>
+      
     </BrowserRouter>
   );
 }
