@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function Modal({ onClose, onWorkspaceCreate }) {
+function Modal({ onClose, onWorkspaceCreate,setWorkspaceCreators }) {
     const [workspaceName, setWorkspaceName] = useState('');
     const [collaborators, setCollaborators] = useState('');
 
@@ -14,9 +14,12 @@ function Modal({ onClose, onWorkspaceCreate }) {
 
     const handleSubmit = () => {
        
-        console.log('Workspace Name:', workspaceName);
-        console.log('Collaborators:', collaborators);
-        onWorkspaceCreate({ workspaceName, collaborators });
+        const workspace = {
+            workspaceName:workspaceName,
+            collaborators:collaborators,
+            todos:[]
+        }
+        setWorkspaceCreators(prevWorkspaceCreators => [...prevWorkspaceCreators, workspace]);
         onClose(); 
     };
 
