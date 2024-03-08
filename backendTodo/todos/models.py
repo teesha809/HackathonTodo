@@ -70,10 +70,10 @@ class List(models.Model):
     list_desc = models.CharField(max_length=200, null=True, blank=False)
     list_owner = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE)    # 
     list_create_at = models.DateTimeField(auto_now_add=True)
-    list_last_updated_at = models.DateTimeField(auto_now_add=True)
+    list_last_updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.list_id + " : " + self.list_title + " : " + self.list_owner
+        return  self.list_title
 
 
 class Task(models.Model):
@@ -93,16 +93,17 @@ class Task(models.Model):
         ('Due', 'Passed Deadline'),
     )
 
-    task_id = models.IntegerField(primary_key=True, auto_created=True)
+    # task_id = models.IntegerField(primary_key=True, auto_created=True)
+    task_id = models.AutoField(primary_key=True)
     task_related_list_id = models.ForeignKey(to=List, on_delete=models.CASCADE)
     task_title = models.CharField(max_length=80, null=False, blank=False)
     task_desc = models.CharField(max_length=200, null=True, blank=False) 
-    task_deadline = models.DateTimeField(auto_now_add=True)
+    task_deadline = models.DateTimeField(null=True, blank=True)
     task_priority = models.CharField(choices=Priority, default='Medium')
     task_status = models.CharField(choices=Status, default='Pending')
     task_collaborators = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE)
     task_create_at = models.DateTimeField(auto_now_add=True)
-    task_last_updated_at = models.DateTimeField(auto_now_add=True)
+    task_last_updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.task_id + " : " + self.task_title + " : " + self.task_collaborators
@@ -129,12 +130,12 @@ class Subtasks(models.Model):
     subtask_related_task_id = models.ForeignKey(to=Task, on_delete=models.CASCADE)
     subtask_title = models.CharField(max_length=80, null=False, blank=False)
     subtask_desc = models.CharField(max_length=200, null=True, blank=False) 
-    subtask_deadline = models.DateTimeField(auto_now_add=True)
+    subtask_deadline = models.DateTimeField(null=True, blank=True)
     subtask_priority = models.CharField(choices=Priority, default='Medium')
     subtask_status = models.CharField(choices=Status, default='Pending')
     subtask_collaborators = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE)
     subtask_create_at = models.DateTimeField(auto_now_add=True)
-    subtask_last_updated_at = models.DateTimeField(auto_now_add=True)
+    subtask_last_updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.subtask_id + " : " + self.subtask_title + " : " + self.subtask_collaborators + " : " + self.subtask_related_task_id
@@ -147,8 +148,6 @@ class Invitation(models.Model):
     receiver_id = models.ForeignKey(to=CustomUser, on_delete=models.CASCADE, related_name="invite_to_user")
     related_task_id = models.ForeignKey(to=Task, on_delete=models.CASCADE)
     invite_create_at = models.DateTimeField(auto_now_add=True)
-
-
 
 class Notification(models.Model):
     """Class to handle notifications sent"""
@@ -164,10 +163,13 @@ class user_task_list(models.Model):
 
     u_id =  models.ForeignKey(to=CustomUser, on_delete=models.CASCADE)
     l_id =  models.ForeignKey(to=List, on_delete=models.CASCADE)
-    t_id = models.ForeignKey(to=Task, on_delete=models.CASCADE)
+    t_id = models.ForeignKey(to=Task, on_delete=models.CASCADE, null=True)
     Role = (
         ('Owner' , 'Owner'),
         ('Collaborator' , 'Collaborator'),
     )
 
     role = models.CharField(choices=Role, default='Owner')
+
+    def __str__(self):
+        return  self.u_id.username + " : " + self.role

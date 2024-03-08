@@ -4,7 +4,7 @@ from rest_framework import status, exceptions
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 
-from .serializers import RegisterSerializer, MyTokenObtainPairSerializer, LoginSerializer, ListSerializer
+from .serializers import *
 from rest_framework_simplejwt.views import TokenObtainPairView
 
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -62,7 +62,7 @@ def list_view(request):
         serializer = ListSerializer(data=request.data)
         # serializer.data.list_owner = request.user
         if serializer.is_valid(raise_exception=True):
-            serializer.save(list_owner=request.user)
+            serializer.save(request)
             return Response({request.user.username : serializer.data})
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -75,59 +75,125 @@ def list_view(request):
             item = {}
             item['name'] = lis.list_title
             item['description'] = lis.list_desc
-
-            # # task ki setails
-            # task_list = Task.objects.filter(task_related_list_id=lis.list_id)
-            # for task in task_list:
-            #     task_item = {}
-            #     task_item['']
-
             data[lis.list_id] = item
-
         return Response(data, status=status.HTTP_200_OK)
     
-@api_view(['GET', 'PUT'])
-def lists_id_view(request, id):
+@api_view(['GET', 'PUT', 'DELETE'])
+def lists_id_view(request, lst_id):
     if request.method == 'GET':
-        list_item = user_task_list.objects.filter(u_id=request.user.id)
-        list_ids_set = set()
-        for list in list_item:
-            list_ids_set.add(list.l_id)
-        
-        if id in list_ids_set:
-            data = {}
-            for idx in list_ids_set:
-                ls_item = List.objects.filter(list_id=idx).first()
-                item = {}
-                item['name'] = ls_item.list_title
-                item['description'] = ls_item.list_desc
+        list_item = user_task_list.objects.filter(u_id=request.user.id, l_id=lst_id, role='Owner')
+        print(list_item)
 
-                # task ki setails
-                task_list = Task.objects.filter(task_related_list_id=ls_item.list_id)
-                task = {}
-                for task in task_list:
-                    task_item = {}
-                    task_item['task_title'] = task.task_title
-                    task_item['task_desc'] = task.task_desc
-                    if request.user in [ls_item.list_owner, task.task_collaborators]:
-                        task_item['editable'] = 'True'
-                    else:
-                        task_item['editable'] = 'False'
-                
-                    task[task.task_id] = task_item
-                item['tasks'] = task
-                data[ls_item.list_id] = item               
+        if list_item:
+            data = {}
+            ls_item = List.objects.filter(list_id=lst_id).first()
+            item = {}
+            item['name'] = ls_item.list_title
+            item['description'] = ls_item.list_desc
+
+            # task ki setails
+            task_list = Task.objects.filter(task_related_list_id=lst_id)
+            task = {}
+            for tsk in task_list:
+                task_item = {}
+                task_item['task_title'] = tsk.task_title
+                task_item['task_desc'] = tsk.task_desc
+                if request.user in [ls_item.list_owner, tsk.task_collaborators]:
+                    task_item['editable'] = 'True'
+                else:
+                    task_item['editable'] = 'False'
+            
+                task[tsk.task_id] = task_item
+            item['tasks'] = task
+            data[ls_item.list_id] = item               
             return Response(data, status=status.HTTP_200_OK)
         else:
             return Response({"message" : "You can not access this."})
             
-    # if request.method == 'PUT':
-    #     serializer = SnippetSerializer(snippet, data=request.data)
-    #     if serializer.is_valid():
-    #         serializer.save()
-    #         return Response(serializer.data)
-    #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    if request.method == 'PUT':       # list update
+        serializer = ListSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save(request, lst_id)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
+    if request.method == 'DELETE':
+        list_item = user_task_list.objects.filter(l_id=id)
+        list_item.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
+@api_view(['GET', 'POST'])
+def tasks_view(request, lst_id):
+    if request.method == 'GET':
+        all_tasks = Task.objects.filter(task_related_list_id=lst_id)
+        data = {}
+        for tsk in all_tasks:
+            item = {}
+            item['name'] = tsk.task_title
+            item['description'] = tsk.task_desc
+            item['deadline'] = tsk.task_deadline
+            item['priority'] = tsk.task_priority
+            item['status'] = tsk.task_status
+            data[tsk.task_id] = item
 
+        return Response(data, status=status.HTTP_200_OK)
+    
+    if request.method == 'POST':
+        serializer = TaskSerializer(data=request.data)
+        # serializer.data.list_owner = request.user
+        if serializer.is_valid(raise_exception=True):
+            serializer.save(request, lst_id)
+            return Response({request.user.username : serializer.data})
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
 
+@api_view(['GET', 'PUT', 'DELETE'])
+def task_id_view(request, lst_id, tsk_id):
+    if request.method == 'GET':
+        task_item = user_task_list.objects.filter(u_id=request.user.id, l_id=lst_id, t_id=tsk_id)
+        
+        if task_item:
+            data = {}
+            tsk_item = Task.objects.filter(task_id=tsk_id).first()
+            item = {}
+            item['task_name'] = tsk_item.task_title
+            item['task_description'] = tsk_item.task_desc
+            item['deadline'] = tsk_item.task_deadline
+            item['priority'] = tsk_item.task_priority
+            item['status'] = tsk_item.task_status
+
+            # task ki setails
+            subtask_list = Subtasks.objects.filter(subtask_related_task_id=tsk_item.task_id)
+            subtasks = {}
+            for subtask in subtask_list:
+                subtask_item = {}
+                subtask_item['subtask_title'] = subtask.subtask_title
+                subtask_item['subtask_desc'] = subtask.subtask_desc
+                subtask_item['subtask_deadline'] = subtask.subtask_deadline
+                subtask_item['subtask_priority'] = subtask.subtask_priority
+                subtask_item['subtask_status'] = subtask.subtask_status
+                if request.user in [tsk_item.task_collaborators, subtask.subtask_collaborators]:
+                    subtask_item['editable'] = 'True'
+                else:
+                    subtask_item['editable'] = 'False'
+            
+                subtasks[subtask.subtask_id] = subtask_item
+            item['subtasks'] = subtasks
+            data[tsk_id] = item               
+            return Response(data, status=status.HTTP_200_OK)
+        else:
+            return Response({"message" : "You can not access this."})
+        
+    if request.method == 'PUT':       # list update
+        task_item = user_task_list.objects.filter(l_id=lst_id, t_id=tsk_id)
+        serializer = TaskSerializer(task_item, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    if request.method == 'DELETE':
+        task_item = user_task_list.objects.filter(l_id=lst_id, t_id=tsk_id)
+        task_item.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
