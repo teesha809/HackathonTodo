@@ -19,6 +19,7 @@ const HomePage = ({user}) => {
   const [tasks, setTasks] = useState([]);
   const [todos, setTodos] = useState([]);
  
+ 
 
   const handleTaskEdit = (id, description, completed) => {
     setTodos(
@@ -48,7 +49,6 @@ const HomePage = ({user}) => {
             />
           </nav>
         </div>
-
         <div className=" w-3/4">
           {page == "DashBoard" && (
             <Dashboard
@@ -69,6 +69,7 @@ const HomePage = ({user}) => {
               pendingTasks={pendingTasks}
               todos={todos}
               tasks={tasks}
+              workspaceCreators={workspaceCreators}
             />
           )}
           {workspaceCreators.length !== 0 &&

@@ -1,14 +1,21 @@
 import React, { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import Modal from "./Modal";
+import ModalNotifaction from './ModalNotification';
 import { MdDelete } from "react-icons/md";
 
 function Sidebar({ setPage, workspaceCreators, setWorkspaceCreators }) {
   const [showModal, setShowModal] = useState(false);
+  const [showModalNotification , setshowModalNotification] = useState(false);
 
   const toggleModal = () => {
     setShowModal(!showModal);
   };
+
+  const notificationModal = () =>{
+    setshowModalNotification(!showModalNotification);
+  }
+
   const handleDeleteWorkspace = (workspaceName) => {
     setWorkspaceCreators((prevWorkspaceCreators) =>
       prevWorkspaceCreators.filter((item) => item.workspaceName !== workspaceName)
@@ -20,25 +27,16 @@ function Sidebar({ setPage, workspaceCreators, setWorkspaceCreators }) {
       <div className="p-4">
         <ul className="space-y-2">
           <li>
-            {/* <NavLink
-              to="/"
-              activeClassName="bg-blue-500 text-white"
-              className="block py-2 px-4 text-white rounded hover:bg-gray-700"
-            > */}
+            
             <button
               className="block py-2 px-4 text-white rounded hover:bg-gray-700 w-full text-left"
               onClick={() => setPage("DashBoard")}
             >
               Dashboard
             </button>
-            {/* </NavLink> */}
+           
           </li>
           <li>
-            {/* <NavLink
-              to="/mytasks"
-              activeClassName="bg-blue-500 text-white"
-              className="block py-2 px-4 text-white rounded hover:bg-gray-700"
-            > */}
             <button
               className="block py-2 px-4 text-white rounded hover:bg-gray-700 w-full text-left"
               onClick={() => setPage("TaskPage")}
@@ -46,6 +44,16 @@ function Sidebar({ setPage, workspaceCreators, setWorkspaceCreators }) {
               My Tasks
             </button>
             {/* </NavLink> */}
+          </li>
+          <li>
+            <button
+              onClick={() => {
+                setshowModalNotification(!showModalNotification);
+              }}
+              className="block py-2 px-4 text-white rounded hover:bg-gray-700 w-full text-left"
+            >
+              Notify
+            </button>
           </li>
           <li>
             <button
@@ -64,7 +72,7 @@ function Sidebar({ setPage, workspaceCreators, setWorkspaceCreators }) {
               <li key={item.workspaceName} className=" flex items-center justify-between">
                 <button
                   onClick={() => {
-                    setPage(item.workspaceName); // Set the selected workspace as the page
+                    setPage(item.workspaceName); 
                   }}
                   className="block py-2 px-8 text-[14px] text-white rounded hover:bg-gray-700 w-full text-left"
                 >
@@ -80,6 +88,11 @@ function Sidebar({ setPage, workspaceCreators, setWorkspaceCreators }) {
         <Modal
           setWorkspaceCreators={setWorkspaceCreators}
           onClose={toggleModal}
+        />
+      )} ,
+      {showModalNotification && (
+        <ModalNotifaction
+          onClose={notificationModal}
         />
       )}
     </div>

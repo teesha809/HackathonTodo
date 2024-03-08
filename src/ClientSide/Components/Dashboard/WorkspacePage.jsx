@@ -9,8 +9,7 @@ function WorkspacePage({ workspaceCreators, item, setWorkspaceCreators }) {
   const [priority, setPriority] = useState("medium");
   const [nextId, setNextId] = useState(1);
   const [todos, setTodos] = useState([]);
-
-  const [workspaces, setWorkspaces] = useState([]);
+  const [deadline, setDeadline] = useState((new Date()).toLocaleString());
 
   const handleAddTodo = () => {
     if (todoText.trim() === "") {
@@ -20,7 +19,8 @@ function WorkspacePage({ workspaceCreators, item, setWorkspaceCreators }) {
       id: nextId,
       title: todoText,
       priority: priority,
-      description: "",
+      deadline: deadline,
+      description: '',
       completed: false,
       date: new Date().toISOString().slice(0, 10),
     };
@@ -94,6 +94,8 @@ function WorkspacePage({ workspaceCreators, item, setWorkspaceCreators }) {
               todoText={todoText}
               setTodoText={setTodoText}
               priority={priority}
+              Deadline={deadline}
+              setDeadline={setDeadline}
               setPriority={setPriority}
               handleAddTodo={() => handleAddTodo()}
             />
@@ -102,6 +104,7 @@ function WorkspacePage({ workspaceCreators, item, setWorkspaceCreators }) {
               totalCompletedTasks={totalCompletedTasks}
               completedPercentage={completedPercentage}
             />
+
             <Workspace
               pendingTasks={pendingTasks}
               handleTaskEdit={handleTaskEdit}

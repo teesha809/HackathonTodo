@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 function Task({ task, onTaskEdit }) {
   const [showModal, setShowModal] = useState(false);
   const [description, setDescription] = useState(task.description || '');
+  const [items, setItems] = useState([]);
 
   const handleTaskClick = () => {
     setShowModal(true);
@@ -31,7 +32,10 @@ function Task({ task, onTaskEdit }) {
             <span className={task.completed ? 'line-through' : ''}>{task.title}</span>
             {task.completed && <sup className="text-xs ml-2">✔</sup>}
           </div>
+          <div className=' flex space-x-2'>
+          <span>{task.deadline}</span>
           <span>{task.description}</span>
+          </div>
         </div>
       </div>
       {/* Task Modal */}
