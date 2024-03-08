@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import AddTodo from '../AddTodo';
 import CompletedTasks from '../CompletedTasks';
 import Statistics from '../Statistics';
@@ -10,12 +10,8 @@ function Dashboard({ user,tasks,setTasks,todos, setTodos,handleTaskEdit,pendingT
     const [todoText, setTodoText] = useState('');
     const [priority, setPriority] = useState('medium');
     const [nextId, setNextId] = useState(1);
-    const navigate = useNavigate();
-    
-    const updateTasks = (newTask) => {
-            setTasks([...tasks, newTask]); 
-        };
-
+    // const [deadline, setDeadline] =useState('');
+   
     const handleAddTodo = () => {
         if (todoText.trim() === '') {
             return;
@@ -24,6 +20,7 @@ function Dashboard({ user,tasks,setTasks,todos, setTodos,handleTaskEdit,pendingT
             id: nextId,
             title: todoText,
             priority: priority,
+            // deadline: deadline,
             description: '',
             completed: false,
             date: new Date().toISOString().slice(0, 10)
@@ -32,13 +29,10 @@ function Dashboard({ user,tasks,setTasks,todos, setTodos,handleTaskEdit,pendingT
         setTodoText('');
         setPriority('medium');
         setNextId(nextId + 1);
+      
     };
 
     
-
-    const handleLogout = () => {
-        navigate('/login');
-    };
     const completedTasks = todos.filter(todo => todo.completed);
     
     const totalCompletedTasks = completedTasks.length;
@@ -64,7 +58,10 @@ function Dashboard({ user,tasks,setTasks,todos, setTodos,handleTaskEdit,pendingT
                         setTodoText={setTodoText}
                         priority={priority}
                         setPriority={setPriority}
+                        // deadline={deadline}
+                        // setDeadline={setDeadline}
                         handleAddTodo={handleAddTodo}
+                        // handleDeadlineChange={handleDeadlineChange}
                     />
 
                     <Statistics

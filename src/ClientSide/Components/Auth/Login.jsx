@@ -10,8 +10,29 @@ function Login({ handleLogin }) {
   const [password, setPassword] = useState('');
   const Navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // try {
+    //   const response = await fetch('https://65e9f170c9bf92ae3d3ab16f.mockapi.io/login/login', {
+    //     method: 'GET',
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //   });
+
+    //   if (response.ok) {
+    //     const userData = await response.json();
+    //     // handleLogin(userData);
+    //     console.log(userData)
+    //     toast.success('lOGGEDIN');
+    //   } else {
+    //     toast.error('Signup failed. Please try again.');
+    //   }
+    // } catch (error) {
+    //   console.error('Error signing up:', error);
+    //   toast.error('Signup failed. Please try again.');
+    // }
     
     const userData = { email, password };
     handleLogin(userData);

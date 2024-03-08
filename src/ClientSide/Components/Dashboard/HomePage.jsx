@@ -18,6 +18,7 @@ const HomePage = ({user}) => {
   
   const [tasks, setTasks] = useState([]);
   const [todos, setTodos] = useState([]);
+ 
 
   const handleTaskEdit = (id, description, completed) => {
     setTodos(
@@ -58,6 +59,7 @@ const HomePage = ({user}) => {
               tasks={tasks}
               setTasks={setTasks}
               user={user}
+              // setDeadline={setDeadline}
               handleLogout={handleLogout}
             />
           )}

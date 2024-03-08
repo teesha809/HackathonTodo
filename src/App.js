@@ -12,37 +12,37 @@ import HomePage from "./ClientSide/Components/Dashboard/HomePage";
 function App() {
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState(null);
-  const [tasks, setTasks] = useState([]);
-  const [todos, setTodos] = useState([]);
+  // const [tasks, setTasks] = useState([]);
+  // const [todos, setTodos] = useState([]);
 
   const handleLogin = (userData) => {
     setUser(userData);
     setLoggedIn(true);
   };
 
-  const handleLogout = () => {
-    setUser(null);
-    setLoggedIn(false);
-  };
+  // const handleLogout = () => {
+  //   setUser(null);
+  //   setLoggedIn(false);
+  // };
 
-  useEffect(() => {
-    console.log("toododod");
-    // console.log(tasks)
-    console.log(todos);
-  }, []);
+  // useEffect(() => {
+  //   console.log("toododod");
+  //   // console.log(tasks)
+  //   console.log(todos);
+  // }, []);
 
-  const handleTaskEdit = (id, description, completed) => {
-    setTodos(
-      todos.map((todo) => {
-        if (todo.id === id) {
-          return { ...todo, description: description, completed: completed };
-        }
-        return todo;
-      })
-    );
-  };
+  // const handleTaskEdit = (id, description, completed) => {
+  //   setTodos(
+  //     todos.map((todo) => {
+  //       if (todo.id === id) {
+  //         return { ...todo, description: description, completed: completed };
+  //       }
+  //       return todo;
+  //     })
+  //   );
+  // };
 
-  const pendingTasks = todos.filter((todo) => !todo.completed);
+ 
 
   return (
     <>
@@ -64,14 +64,14 @@ function App() {
             path="/Dashboard"
             element={
               <Dashboard
-                handleTaskEdit={handleTaskEdit}
-                pendingTasks={pendingTasks}
-                todos={todos}
-                setTodos={setTodos}
-                tasks={tasks}
-                setTasks={setTasks}
-                user={user}
-                handleLogout={handleLogout}
+                // handleTaskEdit={handleTaskEdit}
+                // pendingTasks={pendingTasks}
+                // todos={todos}
+                // setTodos={setTodos}
+                // tasks={tasks}
+                // setTasks={setTasks}
+                // user={user}
+                // handleLogout={handleLogout}
               />
             }
             // element={loggedIn ? <Dashboard handleTaskEdit={handleTaskEdit} pendingTasks={pendingTasks} todos={todos} setTodos={setTodos} tasks={tasks} setTasks={setTasks} user={user} handleLogout={handleLogout} /> : <Login handleLogin={handleLogin} />}
@@ -80,10 +80,10 @@ function App() {
             path="/mytasks"
             element={
               <MyTaskPage
-                handleTaskEdit={handleTaskEdit}
-                pendingTasks={pendingTasks}
-                todos={todos}
-                tasks={tasks}
+                // handleTaskEdit={handleTaskEdit}
+                // pendingTasks={pendingTasks}
+                // todos={todos}
+                // tasks={tasks}
               />
             }
           />
